@@ -118,7 +118,7 @@ class LinkToVerseSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName('Link template')
-			.setDesc('A template for the URL to a site shuld have a {{verse}} placeholder and optional a {{version}} placeholder')
+			.setDesc('A template for the URL to a site should have a {{verse}} placeholder and optional a {{version}} placeholder')
 			.addText(text => text
 				.setPlaceholder('Enter your URL template')
 				.setValue(this.plugin.settings.linkTemplate)
