@@ -1,9 +1,9 @@
 {
 	"id": "link-to-verse",
 	"name": "Link to Verse",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"minAppVersion": "0.15.0",
-	"description": "From a bible reference selected creates a markdown link to a configuraded bible site.",
+	"description": "From a Bible reference selected, creates a markdown link to a configured Bible site.",
 	"author": "aygjiay",
 	"authorUrl": "https://github.com/aygjiay",
 	"isDesktopOnly": false
