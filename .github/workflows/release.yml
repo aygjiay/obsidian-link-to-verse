@@ -18,6 +18,8 @@ jobs:
           node-version: '18.16.0'
 
       - name: Install dependencies
+        env:
+          GITLAB_AUTH_TOKEN: ${{ secrets.GITLAB_AUTH_TOKEN }}
         run: yarn
 
       - name: Extract version from package.json
@@ -25,6 +27,8 @@ jobs:
         run: echo "VERSION=$(jq -r '.version' package.json)" >> $GITHUB_ENV
 
       - name: Build project
+        env:
+          GITLAB_AUTH_TOKEN: ${{ secrets.GITLAB_AUTH_TOKEN }}
         run: yarn build
 
       - name: Create Release

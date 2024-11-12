@@ -2,6 +2,11 @@
 # yarn lockfile v1
 
 
+"@aygjiay/bible-ref-parser@^1.0.1":
+  version "1.0.1"
+  resolved "https://gitlab.com/api/v4/projects/61377112/packages/npm/@aygjiay/bible-ref-parser/-/@aygjiay/bible-ref-parser-1.0.1.tgz#10f6c3978ef012e0c9b23db7f77cb979d7e58190"
+  integrity sha1-EPbDl47wEuDJsj2393y5edflgZA=
+
 "@esbuild/android-arm64@0.17.3":
   version "0.17.3"
   resolved "https://registry.yarnpkg.com/@esbuild/android-arm64/-/android-arm64-0.17.3.tgz#35d045f69c9b4cf3f8efcd1ced24a560213d3346"
