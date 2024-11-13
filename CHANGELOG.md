@@ -1,3 +1,17 @@
+## 1.1.1
+
+### Changed
+- **Parsing Library Integration:** Replaced `@aygjiay/bible-ref-parser` with `@j316/bible-ref-parser` due to availability, as `@j316` is a public version of the same package, allowing broader access and use.
+- **Settings:** Added a `validateBookName` option in the plugin settings to enable or disable validation of the book name before constructing the URL.
+- **Link Generation Logic:** Adjusted the logic to use the `validateBookName` setting, allowing non-standard book names to be passed directly to the URL without validation when this option is disabled.
+- **Template System**: Enhanced `formatVerseRange` function for improved URL formatting when handling spaces, replacing whitespace in book names with either `+` or `%20` as specified by the `encodeSpacesToPlus` setting.
+  
+### UI Improvements
+- **Settings Panel:** Added a `validateBookName` toggle in `LinkToVerseSettingTab` for easier customization.
+
+### Fixed
+- **URL Formatting Issue:** Corrected URL encoding logic for book names, ensuring spaces are replaced as configured in the `encodeSpacesToPlus` setting.
+
 ## 1.1.0
 
 ### Added

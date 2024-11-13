@@ -1,51 +1,23 @@
 import { App, Editor, MarkdownView, Plugin, PluginSettingTab, Setting } from 'obsidian';
-import { parseBibleReference } from '@aygjiay/bible-ref-parser';
-import { BibleRange } from '@aygjiay/bible-ref-parser/types/parseBibleReference';
-
-interface LinkToVersePluginSettings {
-  encodeSpacesToPlus: boolean;
-  bibleLanguage: 'en' | 'sp';
-  defaultVersion: string;
-  linkTemplate: string;
-}
+import { parseBibleReference } from '@j316/bible-ref-parser';
+import type { BibleRange, ParsedBibleReference } from '@j316/bible-ref-parser/dist/api';
+import type { LinkToVersePluginSettings } from './api';
 
 const DEFAULT_SETTINGS: LinkToVersePluginSettings = {
-  encodeSpacesToPlus: true,
   bibleLanguage: 'en',
   defaultVersion: '',
-  linkTemplate: ''
+  encodeSpacesToPlus: true,
+  linkTemplate: '',
+  validateBookName: false,
 }
-
-const verseParse = /^((\d+)\s+)?(\w+)\s?((\d+([:\.]\d+)?(-\d+([:\.]\d+)?)?(,\s*)?)+)\s*(\w+)?/i;
-const verseRange = /\d+([:\.]\d+)?(-\d+([:\.]\d+)?)?/ig;
 
 const DEFAULT_TEMPLATE = 'default';
 const OLIVE_TREE_TEMPLATE = 'OliveTree';
 
-const verseToLink = (selection: string, defaultVersion: string): { book: string, ranges: string[], version: string } => {
-  const parsedVerse = verseParse.exec(selection);
-
-  if (!parsedVerse || !parsedVerse.length) {
-    return { book: '', ranges: [], version: defaultVersion };
-  }
-
-  const book = (parsedVerse[2] ? `${parsedVerse[2]} ` : '') + parsedVerse[3];
-  const rawRanges = parsedVerse[4];
-  const version = parsedVerse[10] || defaultVersion;
-
-  const ranges = rawRanges.match(verseRange)?.map(range => `${range}`) || [];
-
-  return {
-    book,
-    ranges,
-    version
-  };
-}
-
-const formatVerseRange = (parsedVerse: { book: string, bookName: string, ranges: BibleRange[], version: string | string[] }, range: BibleRange, ix: number, defaultVersion: string, linkTemplate: string, encodeSpacesToPlus: boolean) => {
+const formatVerseRange = (parsedVerse: ParsedBibleReference, range: BibleRange, ix: number, defaultVersion: string, linkTemplate: string, encodeSpacesToPlus: boolean) => {
   const bookText = ix === 0 ? parsedVerse.bookName + ' ' : '';
   const spaceChar = encodeSpacesToPlus ? '+' : encodeURIComponent(' ');
-  const bookUri = `${parsedVerse.bookName}`.replace(' ', spaceChar);
+  const bookUri = `${parsedVerse.bookName}`.replace(/\s+/g, spaceChar);
 
   let templateType = DEFAULT_TEMPLATE;
 
@@ -107,7 +79,7 @@ export default class LinkToVersePlugin extends Plugin {
       name: 'Create link to Bible',
       editorCallback: (editor: Editor, _view: MarkdownView) => {
         const selection = editor.getSelection();
-        const parsedVerse = parseBibleReference(this.settings.bibleLanguage, selection, this.settings.defaultVersion);
+        const parsedVerse = parseBibleReference(this.settings.bibleLanguage, selection, this.settings.defaultVersion, this.settings.validateBookName);
         const linkToVerse = parsedVerse.ranges
           .map((range, ix) => formatVerseRange(
             parsedVerse,
@@ -177,11 +149,22 @@ class LinkToVerseSettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName(`Encode spaces to '+'`)
-      .setDesc(`Use as separator a '+' between book name and chapter. Also if book name contains an space is replace by a '+'`)
+      .setDesc(`Use as separator a '+' between book name and chapter instead of URL encoding '%20'. Also if book name contains an space is replace by a '+'`)
       .addToggle(toggle => toggle
         .setValue(this.plugin.settings.encodeSpacesToPlus)
         .onChange(async (value) => {
           this.plugin.settings.encodeSpacesToPlus = value;
+          await this.plugin.saveSettings();
+        })
+      );
+
+    new Setting(containerEl)
+      .setName(`Validate book name`)
+      .setDesc(`If disabled what ever text comes before the chapter-verse section is considered a book name and is passed as it is to the url`)
+      .addToggle(toggle => toggle
+        .setValue(this.plugin.settings.validateBookName)
+        .onChange(async (value) => {
+          this.plugin.settings.validateBookName = value;
           await this.plugin.saveSettings();
         })
       );

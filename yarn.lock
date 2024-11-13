@@ -2,11 +2,6 @@
 # yarn lockfile v1
 
 
-"@aygjiay/bible-ref-parser@^1.0.1":
-  version "1.0.1"
-  resolved "https://gitlab.com/api/v4/projects/61377112/packages/npm/@aygjiay/bible-ref-parser/-/@aygjiay/bible-ref-parser-1.0.1.tgz#10f6c3978ef012e0c9b23db7f77cb979d7e58190"
-  integrity sha1-EPbDl47wEuDJsj2393y5edflgZA=
-
 "@esbuild/android-arm64@0.17.3":
   version "0.17.3"
   resolved "https://registry.yarnpkg.com/@esbuild/android-arm64/-/android-arm64-0.17.3.tgz#35d045f69c9b4cf3f8efcd1ced24a560213d3346"
@@ -116,6 +111,11 @@
   version "0.17.3"
   resolved "https://registry.yarnpkg.com/@esbuild/win32-x64/-/win32-x64-0.17.3.tgz#2f69ea6b37031b0d1715dd2da832a8ae5eb36e74"
   integrity sha512-FdVl64OIuiKjgXBjwZaJLKp0eaEckifbhn10dXWhysMJkWblg3OEEGKSIyhiD5RSgAya8WzP3DNkngtIg3Nt7g==
+
+"@j316/bible-ref-parser@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@j316/bible-ref-parser/-/bible-ref-parser-1.0.0.tgz#cd76c0876c975fd91725de99a1df2062a0de545d"
+  integrity sha512-L1rf9f/cus6lw+6GGElOxX9iNaQsWwrRxS2Qb1nJ9lCZOXsRDpBbjRacKijkJJ4ugEY1tbxtCvHBwSzdgeel7Q==
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
