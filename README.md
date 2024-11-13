@@ -58,42 +58,65 @@ Define the template for the URL linking to the Bible passage. The template shoul
 2. Enter your preferred Bible language (used to recognize book names and some abbreviations) (currently supported: `sp`, `en`).
 3. Enter your preferred default Bible version (e.g., `NLT`).
 4. Enable the use of `+` instead of URL-encoded spaces.
-5. Set the link template to your desired format (e.g., `https://www.biblegateway.com/passage/?search={{verse}}&version={{version}}`).
+5. Enable book name validation against an internal dictionary and use the defined book name.
+6. Set the link template to your desired format (e.g., `https://www.biblegateway.com/passage/?search={{verse}}&version={{version}}`).
 
 #### Supported Tokens in Link Template
 
-Currently, two Templates are supported:
+Two template types are currently supported:
 
 1. **Default** template supports tokens:
-
-  - `verse` (Required): Contains the full Bible reference, including book, chapter, and verse or range of verses.
-  - `version` (Optional): Contains the Bible version. If included but missing in the selected reference, the default version set in the plugin configuration will be used.
+    - `verse` (Required): Contains the full Bible reference, including book, chapter, and verse or range of verses.
+    - `version` (Optional): Contains the Bible version. If included but missing in the selected reference, the default version set in the plugin configuration will be used.
 
 2. **Olive Tree** template supports tokens:
+    - `book` (Required): Contains the book name of the Bible reference.
+    - `chapter` (Required): Contains the chapter number.
+    - `verse` (Required): Contains the verse number.
 
-  - `book` (Required): Contains the book name of the Bible reference.
-  - `chapter` (Required): Contains the chapter number.
-  - `verse` (Required): Contains the verse number.
-
-**Link to Verse** detects the template based on the tokens used. If your template includes `book`, `chapter`, and `verse`, it is identified as an **Olive Tree** template; otherwise, it defaults to the **Default** template.
+**Link to Verse** detects the template type based on the tokens used. If your template includes `book`, `chapter`, and `verse`, it is identified as an **Olive Tree** template; otherwise, it defaults to the **Default** template.
 
 ## 📚 Examples
 
 ### BibleGateway Support
 
+Settings:
+- *Bible language*: `en`
+- *Default version*: `NLT`
+- *Encode spaces to '+'*: `enabled`
+- *Validate book name*: `enabled`
+- *Link template*: `https://www.biblegateway.com/passage/?search={{verse}}&version={{version}}`
+
+#### Case 1
+
 Input: `John 3:16`
-
-With the `NLT` version and the link template `https://www.biblegateway.com/passage/?search={{verse}}&version={{version}}`:
-
 Output: `[John 3:16](https://www.biblegateway.com/passage/?search=John+3:16&version=NLT)`
+
+#### Case 2
+
+Input: `Jn 3:16`
+Output: `[Jn 3:16](https://www.biblegateway.com/passage/?search=John+3:16&version=NLT)`
 
 ### Olive Tree URL Support
 
+Settings:
+- *Bible language*: `en`
+- *Default version*: `NLT`
+- *Encode spaces to '+'*: `disabled`
+- *Validate book name*: `disabled`
+- *Link template*: `olivetree://bible/{{book}}.{{chapter}}.{{verse}}`
+
+Since Olive Tree does not support Bible translations, they are ignored.
+
+#### Case 1
+
 Input: `1 Timothy 3:16`
-
-Since Olive Tree does not support Bible translations, it is ignored. Use the link template `olivetree://bible/{{book}}.{{chapter}}.{{verse}}`:
-
 Output: `[1 Timothy 3:16](olivetree://bible/1%20Timothy.3.16)`
+
+#### Case 2
+
+Input: `SS 4:7`
+Output: `[SS 4:7](olivetree://bible/SS.4.7)`
 
 ## 🛡️ License
 
@@ -110,9 +133,7 @@ Contributions, issues, and feature requests are welcome! Feel free to check the 
 
 ## 📬 Contact
 
-Feel free to reach out with any questions or suggestions:
-
-- **Email**: aygjiay@gmail.com
+If you have any questions, suggestions, or issues, please visit the [GitHub repository](https://github.com/aygjiay/obsidian-link-to-verse) and open an issue.
 
 ---
 
