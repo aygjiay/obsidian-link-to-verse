@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-sample-plugin",
-	"version": "1.1.1",
+	"version": "1.1.2",
 	"description": "A plugin for Obsidian (https://obsidian.md) which from a Bible reference selected, creates a markdown link to a configured Bible site.",
 	"main": "main.js",
 	"scripts": {

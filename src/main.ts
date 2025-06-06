@@ -42,7 +42,7 @@ const formatVerseRange = (parsedVerse: ParsedBibleReference, range: BibleRange, 
   switch (templateType) {
     case DEFAULT_TEMPLATE:
       const from = `${range.fromVerse}`;
-      const to = `${range.fromVerse === range.toVerse}` ? '' : `-${range.toVerse}`;
+      const to = `${range.fromVerse === range.toVerse ? '' : `-${range.toVerse}`}`;
 
       verseRangeUri = linkTemplate
         .replace('{{verse}}', `${bookUri}${spaceChar}${range.chapter}.${from}${to}`)
