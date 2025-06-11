@@ -15,7 +15,7 @@ const DEFAULT_TEMPLATE = 'default';
 const OLIVE_TREE_TEMPLATE = 'OliveTree';
 
 const formatVerseRange = (parsedVerse: ParsedBibleReference, range: BibleRange, ix: number, defaultVersion: string, linkTemplate: string, encodeSpacesToPlus: boolean) => {
-  const bookText = ix === 0 ? parsedVerse.bookName + ' ' : '';
+  const bookText = ix === 0 ? parsedVerse.bookName : '';
   const spaceChar = encodeSpacesToPlus ? '+' : encodeURIComponent(' ');
   const bookUri = `${parsedVerse.bookName}`.replace(/\s+/g, spaceChar);
 
