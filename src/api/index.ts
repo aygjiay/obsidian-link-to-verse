@@ -1,5 +1,7 @@
+import type { SupportedLanguage } from '../languages';
+
 export interface LinkToVersePluginSettings {
-  bibleLanguage: 'en' | 'sp';
+  bibleLanguage: SupportedLanguage;
   defaultVersion: string;
   encodeSpacesToPlus: boolean;
   linkTemplate: string;

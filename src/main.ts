@@ -2,6 +2,8 @@ import { App, Editor, MarkdownView, Plugin, PluginSettingTab, Setting } from 'ob
 import { parseBibleReference } from '@j316/bible-ref-parser';
 import type { BibleRange, ParsedBibleReference } from '@j316/bible-ref-parser/dist/api';
 import type { LinkToVersePluginSettings } from './api';
+import { detectTemplate } from './templates';
+import { validateLanguage, getSupportedLanguageCodes } from './languages';
 
 const DEFAULT_SETTINGS: LinkToVersePluginSettings = {
   bibleLanguage: 'en',
@@ -11,60 +13,25 @@ const DEFAULT_SETTINGS: LinkToVersePluginSettings = {
   validateBookName: false,
 }
 
-const DEFAULT_TEMPLATE = 'default';
-const OLIVE_TREE_TEMPLATE = 'OliveTree';
-
 const formatVerseRange = (parsedVerse: ParsedBibleReference, range: BibleRange, ix: number, defaultVersion: string, linkTemplate: string, encodeSpacesToPlus: boolean) => {
   const bookText = ix === 0 ? parsedVerse.bookName : '';
   const spaceChar = encodeSpacesToPlus ? '+' : encodeURIComponent(' ');
   const bookUri = `${parsedVerse.bookName}`.replace(/\s+/g, spaceChar);
 
-  let templateType = DEFAULT_TEMPLATE;
+  const template = detectTemplate(linkTemplate);
+  const result = template.format({
+    parsedVerse,
+    range,
+    index: ix,
+    defaultVersion,
+    linkTemplate,
+    encodeSpacesToPlus,
+    bookUri,
+    bookText
+  });
 
-  if (
-    linkTemplate.contains('book') &&
-    linkTemplate.contains('chapter') &&
-    linkTemplate.contains('verse')
-  ) {
-    templateType = OLIVE_TREE_TEMPLATE;
-  }
-
-  let versionText = '';
-  const firstVersion = Array.isArray(parsedVerse.version) ? parsedVerse.version[0] : parsedVerse.version;
-
-  if (ix === parsedVerse.ranges.length - 1) {
-    versionText = firstVersion !== defaultVersion ? ` ${firstVersion}` : '';
-  }
-
-  let verseRangeUri = '';
-  let rangeText = '';
-
-  switch (templateType) {
-    case DEFAULT_TEMPLATE:
-      const from = `${range.fromVerse}`;
-      const to = `${range.fromVerse === range.toVerse ? '' : `-${range.toVerse}`}`;
-
-      verseRangeUri = linkTemplate
-        .replace('{{verse}}', `${bookUri}${spaceChar}${range.chapter}.${from}${to}`)
-        .replace('{{version}}', firstVersion);
-
-      rangeText = `${range.chapter}:${from}${to}`;
-      break;
-    case OLIVE_TREE_TEMPLATE:
-      const verse = `${range.fromVerse}`;
-
-      verseRangeUri = linkTemplate
-        .replace('{{book}}', `${bookUri}`)
-        .replace('{{chapter}}', `${range.chapter}`)
-        .replace('{{verse}}', `${verse}`)
-        .replace('{{version}}', firstVersion);
-
-      rangeText = `${range.chapter}:${verse}`;
-      break;
-  }
-
-  return `[${bookText} ${rangeText}${versionText}](${verseRangeUri})`;
-}
+  return result.displayText;
+};
 
 
 export default class LinkToVersePlugin extends Plugin {
@@ -127,12 +94,12 @@ class LinkToVerseSettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName('Bible language')
-      .setDesc('Language for the Bible books names (sp|en)')
+      .setDesc(`Language for the Bible books names (${getSupportedLanguageCodes().join('|')})`)
       .addText(text => text
         .setPlaceholder('Enter your Bible language')
         .setValue(this.plugin.settings.bibleLanguage)
         .onChange(async (value) => {
-          this.plugin.settings.bibleLanguage = value === 'sp' ? 'sp' : 'en';
+          this.plugin.settings.bibleLanguage = validateLanguage(value);
           await this.plugin.saveSettings();
         }));
 
