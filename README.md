@@ -52,6 +52,15 @@ Define the template for the URL linking to the Bible passage. The template shoul
 
 - **Example**: `https://www.biblegateway.com/passage/?search={{verse}}&version={{version}}`
 
+### Presets
+
+Use the preset dropdown if you want a built-in template instead of managing the URL manually.
+
+- **Custom**: Keep using your own URL template.
+- **Bible Gateway**: `https://www.biblegateway.com/passage/?search={{verse}}&version={{version}}`
+- **Olive Tree**: `olivetree://bible/{{book}}.{{chapter}}.{{verse}}`
+- **route.bible**: `https://route.bible/?q={{verse}}&utm_source=obsidian_link_to_verse&utm_medium=link`
+
 ### Setting Configuration
 
 1. Go to `Settings` > `Community plugins` > `Link to Verse` > `Options`.

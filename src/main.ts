@@ -2,12 +2,14 @@ import { App, Editor, MarkdownView, Plugin, PluginSettingTab, Setting } from 'ob
 import { parseBibleReference } from '@j316/bible-ref-parser';
 import type { BibleRange, ParsedBibleReference } from '@j316/bible-ref-parser/dist/api';
 import type { LinkToVersePluginSettings } from './api';
+import { TEMPLATE_PRESETS, detectPresetFromTemplate, getPresetTemplate, type TemplatePresetId } from './presets';
 
 const DEFAULT_SETTINGS: LinkToVersePluginSettings = {
   bibleLanguage: 'en',
   defaultVersion: '',
   encodeSpacesToPlus: true,
   linkTemplate: '',
+  selectedPreset: 'custom',
   validateBookName: false,
 }
 
@@ -105,6 +107,7 @@ export default class LinkToVersePlugin extends Plugin {
 
   async loadSettings() {
     this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+    this.settings.selectedPreset = detectPresetFromTemplate(this.settings.linkTemplate || '');
   }
 
   async saveSettings() {
@@ -170,6 +173,29 @@ class LinkToVerseSettingTab extends PluginSettingTab {
       );
 
     new Setting(containerEl)
+      .setName('Preset')
+      .setDesc('Choose a built-in link preset or keep using a custom URL template')
+      .addDropdown((dropdown) => {
+        Object.entries(TEMPLATE_PRESETS).forEach(([presetId, preset]) => {
+          dropdown.addOption(presetId, preset.label);
+        });
+
+        dropdown
+          .setValue(this.plugin.settings.selectedPreset)
+          .onChange(async (value) => {
+            const presetId = value as TemplatePresetId;
+            this.plugin.settings.selectedPreset = presetId;
+
+            if (presetId !== 'custom') {
+              this.plugin.settings.linkTemplate = getPresetTemplate(presetId);
+            }
+
+            await this.plugin.saveSettings();
+            this.display();
+          });
+      });
+
+    new Setting(containerEl)
       .setName('Link template')
       .setDesc('A template for the URL to a site see README for more details about supported tokens')
       .addText(text => text
@@ -177,6 +203,7 @@ class LinkToVerseSettingTab extends PluginSettingTab {
         .setValue(this.plugin.settings.linkTemplate)
         .onChange(async (value) => {
           this.plugin.settings.linkTemplate = value;
+          this.plugin.settings.selectedPreset = detectPresetFromTemplate(value);
           await this.plugin.saveSettings();
         }));
   }
